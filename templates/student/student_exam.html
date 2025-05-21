@@ -1,0 +1,91 @@
+{% extends 'student/studentbase.html' %}
+{% block content %}
+{%load static%}
+
+<head>
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+  <style media="screen">
+    a:link {
+      text-decoration: none;
+    }
+
+    h6 {
+      text-align: center;
+    }
+
+    .row {
+      margin: 100px;
+    }
+  </style>
+
+</head>
+<br><br>
+<div class="container">
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h6 class="panel-title">Available Courses</h6>
+    </div>
+    <table class="table table-hover table-bordered" id="dev-table">
+      <thead>
+        <tr>
+          <th>Exam Name</th>
+          <!-- <th>Exam Status</th> -->
+          <th>Date and Time</th>
+          <th>Marks</th>
+          <th>Duration(in min.)</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for course_data in courses_with_exam %}
+        <tr>
+          <td>{{ course_data.course.course_name }}</td>
+          <!-- <td>
+            {% if course_data.examSubmitted %}
+              Exam Submitted
+            {% else %}
+              Exam Not Submitted
+            {% endif %}
+          </td> -->
+
+
+
+
+         <td>
+  {% if course_data.course.start_time and course_data.course.end_time %}
+    {{ course_data.course.start_time }} To {{ course_data.course.end_time }}
+  {% else %}
+    -
+  {% endif %}
+</td>
+          <td>{{course_data.course.total_marks}}</td>
+          <td>{{course_data.course.test_duration}}</td>
+
+<!--          <td>{{current_time}}</td>-->
+
+<td>
+  {% if course_data.examSubmitted %}
+    <button class="btn btn-primary btn-sm" disabled>Already Attended</button>
+  {% elif not course_data.course.start_time or not course_data.course.end_time %}
+    <button class="btn btn-secondary btn-sm" disabled>Not Scheduled</button>
+  {% elif current_time < course_data.course.start_time or current_time > course_data.course.end_time %}
+    <button class="btn btn-warning btn-sm" disabled>Exam Not Active</button>
+  {% else %}
+    <a class="btn btn-success btn-sm" style="border-radius:0px;" href="{% url 'check-exam' course_data.course.id %}">
+      <span class="glyphicon glyphicon-check"></span> Attend Exam
+    </a>
+  {% endif %}
+</td>
+
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<br><br><br><br><br><br>
+{% endblock content %}

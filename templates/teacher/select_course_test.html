@@ -1,0 +1,57 @@
+{% extends 'teacher/teacherbase.html' %}
+{% block content %}
+<style>
+    .card {
+        border-radius: 16px;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+    .btn-animated {
+        transition: all 0.3s ease-in-out;
+        border-radius: 30px;
+    }
+
+    .btn-animated:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #007bff, #00c6ff);
+    }
+</style>
+
+<div  style="min-height: 80vh;display: flex;
+    justify-content: center;">
+    <div class="card shadow-lg " style="width: 253px;padding:10px;
+">
+        <div style="margin-bottom:20px" >
+            <h3 class="mb-0">🎓 Select Course</h3>
+            <small class="d-block mt-1">to Add Questions</small>
+        </div>
+        <div >
+            <form method="get" action="{% url 'teacher_add_question' %}">
+                <div class="form-group " style="margin-bottom:20px">
+                    <label for="course" class="font-weight-bold mb-2">📘 Exam</label>
+                    <select name="courseID" style="font-size:14px;" class="form-control form-select" required>
+                        <option value="" disabled selected>-- Choose a Exam --</option>
+                        {% for course in courses %}
+                        <option value="{{ course.id }}">{{ course.course_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success btn-animated px-4 py-2"  >
+                        🚀 Proceed to Add Questions
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

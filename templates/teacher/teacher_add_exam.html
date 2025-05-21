@@ -1,0 +1,130 @@
+{% extends 'teacher/teacherbase.html' %}
+{% load widget_tweaks %}
+{% block content %}
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <style>
+       <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  a:link {
+        text-decoration: none;
+      }
+    
+  </style>
+</head>
+<h2 style="text-align:center; ">Add Exam Info</h2>
+<form method="POST" autocomplete="off" style="margin:100px;margin-top: 0px;">
+    {%csrf_token%}
+    <div class="form-group">
+      <label for="course_name">Exam Name</label>
+      {% render_field courseForm.course_name class="form-control" placeholder="Example: Databases" %}
+
+
+         <div class="form-row">
+    <div class="form-group col">
+        <label for="id_qualification">For Standard</label>
+        <select id="id_qualification" name="qualification" class="form-control" required>
+            <option value="" disabled selected>Choose qualification</option>
+        </select>
+        <span class="error" id="qualificationError"></span>
+    </div>
+</div>
+
+
+         <label for="test_duration">Test Duration (in Minutes)</label>
+      {% render_field courseForm.test_duration class="form-control" placeholder="Example: 30" %}
+
+
+      <label for="question_number">Total Question</label>
+      {% render_field courseForm.question_number class="form-control" placeholder="Example: 10" %}
+
+      <label for="total_marks">Total Marks</label>
+      {% render_field courseForm.total_marks class="form-control" placeholder="Example: 100" %}
+    </div>
+
+    <div class="form-group">
+    <label for="{{ courseForm.negative_marking.id_for_label }}">
+        {{ courseForm.negative_marking }} Negative Marking
+    </label>
+
+        <div id="negative-percentage-group" class="form-group" style="display: none;">
+    <label for="id_negative_marking_percentage">Negative Marking Percentage (per question)</label>
+    <input type="number" name="negative_marking_percentage" id="id_negative_marking_percentage" class="form-control" min="0" max="100" value="50">
+</div>
+
+
+
+
+</div>
+
+    
+
+    <button type="submit" class="btn btn-success" style="border-radius: 0%;">Submit Info</button>
+  </form>
+
+
+<script>
+  // Define the qualification choices
+  const qualificationChoices = [
+    ['10th', '10th Standard'],
+    ['11th', '11th Standard'],
+    ['12th', '12th Standard'],
+    ['bsc_1st_year', 'B.Sc. - 1st Year'],
+    ['bsc_2nd_year', 'B.Sc. - 2nd Year'],
+    ['bsc_3rd_year', 'B.Sc. - 3rd Year'],
+    ['bca_1st_year', 'BCA - 1st Year'],
+    ['bca_2nd_year', 'BCA - 2nd Year'],
+    ['bca_3rd_year', 'BCA - 3rd Year'],
+    ['bcom_1st_year', 'B.Com. - 1st Year'],
+    ['bcom_2nd_year', 'B.Com. - 2nd Year'],
+    ['bcom_3rd_year', 'B.Com. - 3rd Year'],
+    ['ba_1st_year', 'B.A. - 1st Year'],
+    ['ba_2nd_year', 'B.A. - 2nd Year'],
+    ['ba_3rd_year', 'B.A. - 3rd Year'],
+    ['mba', 'MBA'],
+    ['mca', 'MCA'],
+    ['msc', 'M.Sc.'],
+    ['ma', 'M.A.'],
+    ['mcom', 'M.Com.'],
+    ['diploma', 'Diploma'],
+    ['phd', 'Ph.D.'],
+    ['other', 'Other']
+  ];
+
+  // Get the select element
+  const selectElement = document.getElementById('id_qualification');
+
+  // Loop through the choices and create option elements
+  qualificationChoices.forEach(([value, label]) => {
+    const option = document.createElement('option');
+    option.value = value;
+    option.textContent = label;
+    selectElement.appendChild(option);
+  });
+
+
+   function toggleNegativeInput() {
+            if ($('#id_negative_marking').is(':checked')) {
+                $('#negative-percentage-group').show();
+            } else {
+                $('#negative-percentage-group').hide();
+            }
+        }
+
+         toggleNegativeInput();
+
+        // Toggle on change
+        $('#id_negative_marking').change(function () {
+            toggleNegativeInput();
+        });
+
+
+
+</script>
+<br><br><br>
+{% endblock content %}

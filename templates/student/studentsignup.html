@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+{% load widget_tweaks %}
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <style>
+        form {
+            margin: 50px;
+        }
+        .error {
+            color: red;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    {% include "exam/navbar.html" %}
+    <br><br><br>
+    <div class="container">
+        <h3 style="text-align: center;">Student Signup Form</h3>
+        <form id="signupForm" method="POST" autocomplete="off" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="first_name">First Name</label>
+                    {% render_field userForm.first_name|attr:'required:true' class="form-control" placeholder="First Name" %}
+                    <span class="error" id="firstNameError"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="last_name">Last Name</label>
+                    {% render_field userForm.last_name|attr:'required:true' class="form-control" placeholder="Last Name" %}
+                    <span class="error" id="lastNameError"></span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="mobile">Contact</label>
+                    {% render_field studentForm.mobile|attr:'required:true' class="form-control" placeholder="Contact Number" %}
+                    <span class="error" id="mobileError"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="address">Address</label>
+                    {% render_field studentForm.address|attr:'required:true' class="form-control" placeholder="Address" %}
+                    <span class="error" id="addressError"></span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="username">Username</label>
+                    {% render_field userForm.username|attr:'required:true' class="form-control" placeholder="Enter Email" %}
+                    <span class="error" id="usernameError"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="inputPassword4">Password</label>
+                    {% render_field userForm.password|attr:'required:true' class="form-control" placeholder="Password" %}
+                    <span class="error" id="passwordError"></span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label for="profile_pic">Profile Picture</label>
+                    {% render_field studentForm.profile_pic|attr:'required:true' class="form-control" style="height: 44px;" placeholder="" %}
+                    <span class="error" id="profilePicError"></span>
+                </div>
+            </div>
+
+<div class="form-row">
+    <div class="form-group col-md-4">
+        <label for="id_qualification">Qualification</label>
+        <select id="id_qualification" name="qualification" class="form-control" required>
+            <option value="" disabled selected>Choose qualification</option>
+        </select>
+        <span class="error" id="qualificationError"></span>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+             <div class="form-row"  style="justify-content:center">
+
+                    <button type="submit" style="    border-radius: 8px;
+    width: 65%;height:50px;      max-width: 450px;" class="btn btn-success" style="border-radius: 0%;">Sign Up</button>
+
+            </div>
+
+
+        </form>
+    </div>
+
+    <br><br>
+    {% include "exam/footer2.html" %}
+
+
+    <script>
+  // Define the qualification choices
+  const qualificationChoices = [
+    ['10th', '10th Standard'],
+    ['11th', '11th Standard'],
+    ['12th', '12th Standard'],
+    ['bsc_1st_year', 'B.Sc. - 1st Year'],
+    ['bsc_2nd_year', 'B.Sc. - 2nd Year'],
+    ['bsc_3rd_year', 'B.Sc. - 3rd Year'],
+    ['bca_1st_year', 'BCA - 1st Year'],
+    ['bca_2nd_year', 'BCA - 2nd Year'],
+    ['bca_3rd_year', 'BCA - 3rd Year'],
+    ['bcom_1st_year', 'B.Com. - 1st Year'],
+    ['bcom_2nd_year', 'B.Com. - 2nd Year'],
+    ['bcom_3rd_year', 'B.Com. - 3rd Year'],
+    ['ba_1st_year', 'B.A. - 1st Year'],
+    ['ba_2nd_year', 'B.A. - 2nd Year'],
+    ['ba_3rd_year', 'B.A. - 3rd Year'],
+    ['mba', 'MBA'],
+    ['mca', 'MCA'],
+    ['msc', 'M.Sc.'],
+    ['ma', 'M.A.'],
+    ['mcom', 'M.Com.'],
+    ['diploma', 'Diploma'],
+    ['phd', 'Ph.D.'],
+    ['other', 'Other']
+  ];
+
+  // Get the select element
+  const selectElement = document.getElementById('id_qualification');
+
+  // Loop through the choices and create option elements
+  qualificationChoices.forEach(([value, label]) => {
+    const option = document.createElement('option');
+    option.value = value;
+    option.textContent = label;
+    selectElement.appendChild(option);
+  });
+</script>
+
+    
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', function(event) {
+            let isValid = true;
+
+            // Clear previous error messages
+            document.querySelectorAll('.error').forEach(function(error) {
+                error.textContent = '';
+            });
+
+            // Validate first name
+            const firstName = document.getElementById('id_first_name').value;
+            if (!firstName) {
+                document.getElementById('firstNameError').textContent = 'First name is required.';
+                isValid = false;
+            }
+
+            // Validate last name
+            const lastName = document.getElementById('id_last_name').value;
+            if
+            (!lastName) {
+                document.getElementById('lastNameError').textContent = 'Last name is required.';
+                isValid = false;
+            }
+
+            // Validate mobile
+            const mobile = document.getElementById('id_mobile').value;
+            if (!mobile) {
+                document.getElementById('mobileError').textContent = 'Contact number is required.';
+                isValid = false;
+            } else if (!/^\d{10}$/.test(mobile)) {
+                document.getElementById('mobileError').textContent = 'Contact number must be exactly 10 digits.';
+                isValid = false;
+            }
+
+            // Validate address
+            const address = document.getElementById('id_address').value;
+            if (!address) {
+                document.getElementById('addressError').textContent = 'Address is required.';
+                isValid = false;
+            }
+
+            // Validate username
+            const username = document.getElementById('id_username').value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!username) {
+                document.getElementById('usernameError').textContent = 'Username is required.';
+                isValid = false;
+            } else if (!emailRegex.test(username)) {
+    document.getElementById('usernameError').textContent = 'Enter a valid email address.';
+    isValid = false;
+}
+
+            // Validate password
+            const password = document.getElementById('id_password').value;
+            if (!password) {
+                document.getElementById('passwordError').textContent = 'Password is required.';
+                isValid = false;
+            } else if (password.length < 8) {
+                document.getElementById('passwordError').textContent = 'Password must be at least 8 characters long.';
+                isValid = false;
+            }
+
+            // Validate profile picture
+            const profilePic = document.getElementById('id_profile_pic').value;
+            if (!profilePic) {
+                document.getElementById('profilePicError').textContent = 'Profile picture is required.';
+                isValid = false;
+            }
+
+            if (!isValid) {
+                event.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,252 @@
+{% extends 'teacher/teacherbase.html' %}
+{% load widget_tweaks %}
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <title>Teacher Profile</title>
+    <style>
+        .form-row {
+            margin-bottom: 10px;
+        }
+        .form-control {
+            padding: 5px;
+            margin-right: 5px;
+        }
+        .btn {
+            padding: 5px 10px;
+            margin-top: 5px;
+        }
+        .btn-danger {
+            background-color: red;
+            color: white;
+            border: none;
+        }
+        .btn-success {
+            background-color: green;
+            color: white;
+            border: none;
+        }
+        .btn-primary {
+            background-color: blue;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <h2 class="text-center mb-4" style="    text-align: center;">Teacher Profile</h2>
+
+    <div class="">
+        <!-- Teacher Information -->
+        <div class="">
+
+            <div class=" " style="padding: 10px;">
+                <p style="text-align:left;"><strong>Full Name:</strong> {{ teacher.user.get_full_name }}</p>
+                <p style="text-align:left;"><strong>Username:</strong> {{ teacher.user.username }}</p>
+                <p style="text-align:left;"><strong>Mobile:</strong> {{ teacher.mobile }}</p>
+                <p style="text-align:left;"><strong>Address:</strong> {{ teacher.address }}</p>
+                <p style="text-align:left;"><strong>Salary:</strong> ₹{{ teacher.salary }}</p>
+                <p style="text-align:left;"><strong>Status:</strong> {{ teacher.status|yesno:"Active,Inactive" }}</p>
+            </div>
+        </div>
+
+        <!-- Qualifications -->
+
+        <div style="padding:10px;">
+        <h3>Qualifications</h3>
+        {% if teacher.qualifications.all %}
+            <ul>
+                {% for qualification in teacher.qualifications.all %}
+                    <li>{{ qualification.degree }} from {{ qualification.institution }} ({{ qualification.year_of_passing }})</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No qualifications added.</p>
+        {% endif %}
+
+        <!-- Subjects -->
+        <h3>Teaching Subjects</h3>
+        {% if teacher.subjects.all %}
+            <ul>
+                {% for subject in teacher.subjects.all %}
+                    <li>{{ subject.name }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No subjects assigned.</p>
+        {% endif %}
+
+        <!-- Achievements -->
+        <h3>Achievements</h3>
+        {% if teacher.achievements.all %}
+            <ul>
+                {% for achievement in teacher.achievements.all %}
+                    <li>{{ achievement.title }}: {{ achievement.description }} ({{ achievement.date }})</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No achievements listed.</p>
+        {% endif %}
+
+       <!-- Qualifications Section -->
+    <h3>Qualifications</h3>
+    <div id="qualifications-list">
+        <!-- Existing qualifications will be listed here -->
+    </div>
+    <div id="qualification-forms">
+        <!-- Dynamic qualification inputs will be added here -->
+    </div>
+    <button type="button" class="btn btn-success" id="add-qualification">Add Qualification</button>
+
+    <!-- Subjects Section -->
+    <h3>Subjects</h3>
+    <div id="subjects-list">
+        <!-- Existing subjects will be listed here -->
+    </div>
+    <div id="subject-forms">
+        <!-- Dynamic subject inputs will be added here -->
+    </div>
+    <button type="button" class="btn btn-success" id="add-subject">Add Subject</button>
+
+    <!-- Achievements Section -->
+    <h3>Achievements</h3>
+    <div id="achievements-list">
+        <!-- Existing achievements will be listed here -->
+    </div>
+    <div id="achievement-forms">
+        <!-- Dynamic achievement inputs will be added here -->
+    </div>
+    <button type="button" class="btn btn-success" id="add-achievement">Add Achievement</button>
+
+    <!-- Save Button -->
+    <button type="button" class="btn btn-primary" id="save-profile">Save Profile</button>
+</div>
+        </div>
+
+
+
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    let qualificationCount = 0;
+    let subjectCount = 0;
+    let achievementCount = 0;
+
+    // Function to create input elements
+    function createInput(name, placeholder, type = 'text') {
+        const input = document.createElement('input');
+        input.type = type;
+        input.name = name;
+        input.placeholder = placeholder;
+        input.classList.add('form-control');
+        return input;
+    }
+
+    // Function to create a remove button
+    function createRemoveButton() {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.classList.add('btn', 'btn-danger', 'remove-form');
+        button.textContent = 'Remove';
+        return button;
+    }
+
+    // Add Qualification
+    document.getElementById('add-qualification').addEventListener('click', function() {
+        const container = document.getElementById('qualification-forms');
+        const div = document.createElement('div');
+        div.classList.add('form-row');
+        div.appendChild(createInput(`qualification-${qualificationCount}-degree`, 'Degree'));
+        div.appendChild(createInput(`qualification-${qualificationCount}-institution`, 'Institution'));
+        div.appendChild(createInput(`qualification-${qualificationCount}-year`, 'Year of Passing','number'));
+        div.appendChild(createRemoveButton());
+        container.appendChild(div);
+        qualificationCount++;
+    });
+
+    // Add Subject
+    document.getElementById('add-subject').addEventListener('click', function() {
+        const container = document.getElementById('subject-forms');
+        const div = document.createElement('div');
+        div.classList.add('form-row');
+        div.appendChild(createInput(`subject-${subjectCount}-name`, 'Subject Name'));
+        div.appendChild(createRemoveButton());
+        container.appendChild(div);
+        subjectCount++;
+    });
+
+    // Add Achievement
+    document.getElementById('add-achievement').addEventListener('click', function() {
+        const container = document.getElementById('achievement-forms');
+        const div = document.createElement('div');
+        div.classList.add('form-row');
+        div.appendChild(createInput(`achievement-${achievementCount}-title`, 'Title'));
+        div.appendChild(createInput(`achievement-${achievementCount}-description`, 'Description'));
+        div.appendChild(createInput(`achievement-${achievementCount}-date`, '', 'date'));
+        div.appendChild(createRemoveButton());
+        container.appendChild(div);
+        achievementCount++;
+    });
+
+    // Remove dynamic form row
+    document.addEventListener('click', function(event) {
+        if (event.target.classList.contains('remove-form')) {
+            event.target.parentElement.remove();
+        }
+    });
+
+    // Save Profile via AJAX
+    document.getElementById('save-profile').addEventListener('click', function() {
+        const data = {
+            qualifications: [],
+            subjects: [],
+            achievements: []
+        };
+
+        // Collect Qualifications
+        document.querySelectorAll('#qualification-forms .form-row').forEach(function(row) {
+            const degree = row.querySelector('input[name^="qualification-"][name$="-degree"]').value;
+            const institution = row.querySelector('input[name^="qualification-"][name$="-institution"]').value;
+            const year = row.querySelector('input[name^="qualification-"][name$="-year"]').value;
+            data.qualifications.push({ degree, institution, year });
+        });
+
+        // Collect Subjects
+        document.querySelectorAll('#subject-forms .form-row').forEach(function(row) {
+            const name = row.querySelector('input[name^="subject-"][name$="-name"]').value;
+            data.subjects.push({ name });
+        });
+
+        // Collect Achievements
+        document.querySelectorAll('#achievement-forms .form-row').forEach(function(row) {
+            const title = row.querySelector('input[name^="achievement-"][name$="-title"]').value;
+            const description = row.querySelector('input[name^="achievement-"][name$="-description"]').value;
+            const date = row.querySelector('input[name^="achievement-"][name$="-date"]').value;
+            data.achievements.push({ title, description, date });
+        });
+
+        // Send data via AJAX
+        fetch("{% url 'teacher_profile' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Profile saved successfully!');
+                // Optionally, refresh the page or update the DOM
+            } else {
+                alert('Error saving profile.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An unexpected error occurred.');
+        });
+    });
+});
+</script>
+
+{% endblock %}

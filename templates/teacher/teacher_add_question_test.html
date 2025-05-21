@@ -1,0 +1,135 @@
+{% extends 'teacher/teacherbase.html' %}
+{% load widget_tweaks %}
+{% block content %}
+<style>
+    .card {
+        margin-bottom: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+
+    }
+    .card-header {
+        background: linear-gradient(135deg, #007bff, #00c6ff);
+        color: white;
+        font-weight: bold;
+        border-radius: 12px 12px 0 0;
+        padding: 15px;
+    }
+    .btn-submit {
+        border-radius: 30px;
+        padding: 10px 30px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+    .btn-submit:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    }
+
+    .card-body{
+    padding:20px;
+    }
+
+    .card-body-input{
+    font-size:16px;
+    }
+
+    .card-body-input input,.card-body-input textarea,.card-body-input select{
+    display: block;
+  width: 90%;
+  height: calc(1.5em + .75rem + 2px);
+  margin-top: 2px;
+    margin-bottom: 6px;
+
+
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border:
+1px solid #ced4da;
+  border-radius:
+.25rem;
+  transition:
+border-color .15s ease-in-out,box-shadow .15s ease-in-out;}
+</style>
+
+<div class="container" style="max-width: 900px; margin-top: 40px;padding-left: 20px;">
+    <div class="text-center mb-5">
+        <h2 class="font-weight-bold">📝 Add Questions for <span class="text-primary">{{ course.course_name }}(Total Marks : {{ course.total_marks }})</span></h2>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="courseID" value="{{ course_id }}">
+        {{ formset.management_form }}
+
+        {% for form in formset %}
+            <div class="card">
+                <div class="card-header">
+                    Question {{ forloop.counter }}
+                </div>
+                <div class="card-body">
+                    {% for field in form %}
+                    <div class="form-control card-body-input">
+                        <label class="font-weight-medium">{{ field.label }}</label>
+                        {% render_field field class="form-control" %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+
+        <div class="text-center mt-4">
+<!--            <button type="submit" class="btn btn-success btn-submit "  onclick="this.disabled=true; this.innerHTML='<span class=\'spinner-border spinner-border-sm\'></span> Submitting...'; this.form.submit();">-->
+<!--                ✅ Submit All Questions-->
+<!--            </button>-->
+
+       <button type="submit" class="btn btn-success btn-submit" id="submitBtn">
+    ✅ Submit All Questions
+    <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true" id="submitSpinner"></span>
+</button>
+
+
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.querySelector('form');
+    const submitBtn = document.getElementById('submitBtn');
+    const spinner = document.getElementById('submitSpinner');
+    const totalRequired = {{ course.total_marks }}; // Ensure this is rendered correctly
+
+    if (form) {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault(); // Prevent default submission
+
+            let totalMarks = 0;
+            const markInputs = document.querySelectorAll('input[name$="-marks"]');
+
+            markInputs.forEach(input => {
+                totalMarks += parseInt(input.value) || 0;
+            });
+
+            if (totalMarks !== totalRequired) {
+                alert(`⚠️ Total marks must be exactly ${totalRequired}. You entered ${totalMarks}.`);
+                return;
+            }
+
+            // Disable the submit button and show spinner
+            submitBtn.disabled = true;
+            spinner.classList.remove('d-none');
+
+            // Submit the form
+            form.submit();
+        });
+    }
+});
+</script>
+
+
+{% endblock content %}

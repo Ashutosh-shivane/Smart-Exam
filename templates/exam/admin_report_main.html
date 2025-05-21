@@ -1,0 +1,192 @@
+{% extends 'exam/adminbase.html' %}
+{% load widget_tweaks %}
+{% block content %}
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <style type="text/css">
+      a:link {
+        text-decoration: none;
+      }
+
+      .order-card {
+        color: rgb(255, 255, 255);
+      }
+
+      .bg-c-blue {
+        background: #04868f;
+      }
+
+      .bg-c-green {
+        background: #607d8b;
+      }
+
+      .bg-c-yellow {
+        background: #F56565;
+      }
+
+      .bg-c-pink {
+        background: #663a30;
+      }
+
+      .card {
+        -webkit-box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+        box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+        margin-bottom: 30px;
+        -webkit-transition: all 0.3s ease-in-out;
+        transition: all 0.3s ease-in-out;
+      }
+
+      .card .card-block {
+        padding: 25px;
+      }
+
+      .order-card i {
+        font-size: 26px;
+      }
+
+      .f-left {
+        float: left;
+      }
+
+      .f-right {
+        float: right;
+      }
+
+      header {
+        left: 0px;
+        right: 0px;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+    </style>
+</head>
+
+<br><br>
+
+<div class="container" style="margin-bottom:116px;">
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Select Report Type</h3>
+            <div class="form-group">
+                <label for="report-type">Report Type:</label>
+                <select id="report-type" class="form-control">
+                    <option value="">-- Select Report Type --</option>
+                    <option value="monthly_student">Monthly Student Report</option>
+                    <option value="all_student">All Student Report</option>
+                    <option value="monthly_teacher">Monthly Teacher Report</option>
+                    <option value="all_teacher">All Teacher Report</option>
+                    <option value="particular_student">Particular Student Report</option>
+                    <option value="all_exam">All Exam Report</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shared Month/Year Fields -->
+    <div id="month-year-fields" class="row hidden">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Select Month:</label>
+                <select id="month" class="form-control">
+  <option value="01">January</option>
+  <option value="02">February</option>
+  <option value="03">March</option>
+  <option value="04">April</option>
+  <option value="05">May</option>
+  <option value="06">June</option>
+  <option value="07">July</option>
+  <option value="08">August</option>
+  <option value="09">September</option>
+  <option value="10">October</option>
+  <option value="11">November</option>
+  <option value="12">December</option>
+</select>
+
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Select Year:</label>
+                <input type="number" id="year" class="form-control" placeholder="e.g. 2025">
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Selector -->
+    <div id="student-field" class="row hidden">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label>Select Student:</label>
+                <select id="student" class="form-control">
+                    {% for student in students %}
+                    <option value="{{ student.id }}">{{ student.get_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="form-group">
+        <button id="generate-report" class="btn btn-primary">Generate Report</button>
+    </div>
+</div>
+
+
+<script src="http://netdna.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+
+<script>
+$(document).ready(function () {
+    $('#report-type').on('change', function () {
+        let value = $(this).val();
+
+        // Hide all
+        $('#month-year-fields').addClass('hidden');
+        $('#student-field').addClass('hidden');
+
+        // Show based on selection
+        if (value === 'monthly_student' || value === 'monthly_teacher') {
+            $('#month-year-fields').removeClass('hidden');
+        } else if (value === 'particular_student') {
+            $('#student-field').removeClass('hidden');
+        }
+        // No extra input needed for all_student, all_teacher, all_exam
+    });
+
+   $('#generate-report').click(function () {
+    let reportType = $('#report-type').val();
+    let month = $('#month').val();
+    let year = $('#year').val();
+    let studentId = $('#student').val();
+
+    let url = '/generate-report/?type=' + reportType;
+
+    if (reportType === 'monthly_student' || reportType === 'monthly_teacher') {
+        url += '&month=' + month + '&year=' + year;
+    }
+    if (reportType === 'particular_student') {
+        url += '&student_id=' + studentId;
+    }
+
+    window.location.href = url;
+});
+
+});
+</script>
+
+
+{% endblock content %}
